@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PRISM>
+	<!--	Entries taken from Table 4. Strong Motion Network Codes, in the
+	COSMOS Strong Motion Data Format spec. -->
+	<ProcessingAgency>
+		<StrongMotionNetworkCode>
+			<AgencyFullName>U.S. Geological Survey</AgencyFullName>
+			<AgencyAbbreviation>USGS</AgencyAbbreviation>
+			<AgencyCode>2</AgencyCode>
+			<AgencyIRISCode>NP</AgencyIRISCode>			
+		</StrongMotionNetworkCode>
+	</ProcessingAgency>
+	
+	<!--  Units to use for conversion from counts in V1 processing.  Entries
+	taken from Table 2. Data Units Codes, in the COSMOS Strong Motion
+	Data Format spec.  Currently supported are cm/sec/sec and g. -->
+	<DataUnitsForCountConversion>
+		<DataUnitCodes>
+			<DataUnitCode>04</DataUnitCode>
+			<DataUnitName>cm/sec2</DataUnitName>
+		</DataUnitCodes>
+	</DataUnitsForCountConversion>
+	
+	<!--	There are 2 different algorithms for event detection:
+	AIC (modified Akaike Information Criterion) or PWD (P-wave Detector). -->
+	<EventDetectionMethod>PWD</EventDetectionMethod>
+	<!--The Event Onset algorithm estimates the start of the event onset and
+	returns the time that the onset occurred in the time series, assuming time = 0
+	at the start of the data array. The event onset buffer parameter 
+	extends the returned time earlier in the array by the buffer 
+	value.  The buffer value is in seconds. The default is 0.0 seconds. -->
+	
+	<EventOnsetBufferAmount>0.0</EventOnsetBufferAmount>
+
+	<!-- The QC parameters are used during V2 processing as acceptable limits
+	for the initial and residual velocity and the residual displacement.  If
+	the array values during QC tests are less than or equal to these parameters,
+	then the record passes on to V3 processing. -->
+	<QCparameters>
+		<InitialVelocity>0.1</InitialVelocity>
+		<ResidualVelocity>0.1</ResidualVelocity>
+		<ResidualDisplacement>0.1</ResidualDisplacement>
+	</QCparameters>
+	
+	<!--	The Butterworth band pass filter implementation expects the filter
+	order to be an even number.  If an odd number
+	is entered here for the filter order, it will be truncated by
+	integer division to the next lower multiple of 2.  The taper length
+	is defined in seconds, and defines the number of elements at the
+	beginning and end of the array over which the half cosine taper is
+	applied. -->
+	<BandPassFilterParameters>
+		<BandPassFilterOrder>4</BandPassFilterOrder>
+		<BandPassTaperLength>2.0</BandPassTaperLength>
+		<BandPassFilterCutoff>
+			<CutoffLow>0.1</CutoffLow>
+			<CutoffHigh>20.0</CutoffHigh>
+		</BandPassFilterCutoff>
+	</BandPassFilterParameters>
+		
+	<!--If a filename is given here, it will be read in and used to
+	configure the filters to be used for given station numbers.
+	Currently not used  -->
+	<StructuresFilterTable></StructuresFilterTable>
+
+	<!--The Adaptive Baseline Correction algorithm uses 3 segments to try and construct
+	a baseline correction function.  The first segment, from the start of the
+	velocity array until the event onset, is fitted with a polynomial whose order is
+	defined with the FirstPolyOrder tag.  The third segment, whose start is determined
+	by an iterative process, is fitted with a polynomial whose order is defined with
+	the ThirdPolyOrder tag.  The middle segment, starting at the event onset, is
+	fitted with a polynomial spline function that interpolates between the 1st and 3rd
+	segments.-->
+	<AdaptiveBaselineCorrection>
+		<FirstPolyOrder>
+			<LowerLimit>1</LowerLimit>
+			<UpperLimit>22</UpperLimit>
+		</FirstPolyOrder>
+		<ThirdPolyOrder>
+			<LowerLimit>1</LowerLimit>
+			<UpperLimit>3</UpperLimit>
+		</ThirdPolyOrder>
+	</AdaptiveBaselineCorrection>
+	
+	<!-- The strong motion threshold parameter determines the %g that the corrected
+	acceleration needs to meet or exceed to have computed parameters calculated and the
+	strong motion flag set.  This value should be a percentage, such as 5 for strong
+	motion records >= 5%g -->
+	<StrongMotionThreshold>0</StrongMotionThreshold>
+		
+	<!--	Tags for output data array format are SingleColumn and Packed.
+	SingleColumn will write one data value per line, and Packed will pack
+	multiple values per line to fill up the 80-character line width. -->
+	<OutputArrayFormat>SingleColumn</OutputArrayFormat>
+	
+	<!--  The DeleteInputV0 flag controls the deletion of the files from the input folder
+	as they are processed.  If flag is set to 'Yes', the input files that are successfully 
+	processed will be deleted from the input folder. This option is for an automated
+	processing configuration.  To leave the input files in the input folder after execution
+	is complete, set this flag to 'No'.  -->
+	<DeleteInputV0>No</DeleteInputV0>
+
+	<!-- The DebugToLog flag controls the amount of information that is written to the
+	ErrorDebugLog text file during processing.  If this flag is set to Off, only information
+	about records that fail to pass V2 processing will be written to the log.  If the
+	value is set to On, debug information about all records processed gets written to the log.
+	The WriteBaselineFunction flag, if set to 'On', will cause the baseline functions created
+	during adaptive baseline correction (ABC) to be written as text files into the output folder.
+	It will also write the velocity array just before baseline correction.
+	The name of the files will be the V0 file name with either "baseline.txt"  or
+	"afterIntegrationToVel" appended to it.  If
+	the flag is set to 'On' and no baseline text files are output, then ABC was not used for any
+	processing.
+	-->
+	<DebugToLog>On</DebugToLog>
+	<WriteBaselineFunction>On</WriteBaselineFunction>
+</PRISM>

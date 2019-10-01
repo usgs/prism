@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:simpleType name="PosDoubleType">
+        <xs:restriction base="xs:double">
+            <xs:minInclusive value="0.0"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="Range100Type">
+        <xs:restriction base="xs:double">
+            <xs:minInclusive value="0.0"/>
+            <xs:maxInclusive value="100.0"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="PRISM">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ProcessingAgency">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="StrongMotionNetworkCode">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="AgencyFullName" type="xs:string"></xs:element>
+                                        <xs:element name="AgencyAbbreviation" type="xs:string"></xs:element>
+                                        <xs:element name="AgencyCode" type="xs:int"></xs:element>
+                                        <xs:element name="AgencyIRISCode" type="xs:string"></xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="DataUnitsForCountConversion">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="DataUnitCodes">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="DataUnitCode" type="xs:int"></xs:element>
+                                        <xs:element name="DataUnitName" type="xs:string"></xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="EventDetectionMethod">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="PWD"/>
+                            <xs:enumeration value="AIC"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="EventOnsetBufferAmount">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="PosDoubleType">
+                                <xs:attribute name="unit" type="xs:string" fixed="sec"></xs:attribute>
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+               </xs:element>
+                <xs:element name="QCparameters">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="InitialVelocity">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="PosDoubleType">
+                                            <xs:attribute name="unit" type="xs:string" fixed="cm/sec"></xs:attribute>
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="ResidualVelocity">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="PosDoubleType">
+                                            <xs:attribute name="unit" type="xs:string" fixed="cm/sec"></xs:attribute>
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="ResidualDisplacement">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="PosDoubleType">
+                                            <xs:attribute name="unit" type="xs:string" fixed="cm"></xs:attribute>
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="BandPassFilterParameters">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="BandPassFilterOrder">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:int">
+                                        <xs:minInclusive value="4"/>
+                                        <xs:maxInclusive value="16"/>
+                                    </xs:restriction>
+                                </xs:simpleType>                                                                                           
+                            </xs:element>
+                            <xs:element name="BandPassTaperLength">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="PosDoubleType">
+                                            <xs:attribute name="unit" type="xs:string" fixed="sec"></xs:attribute>
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="BandPassFilterCutoff">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="CutoffLow">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                    <xs:extension base="PosDoubleType">
+                                                        <xs:attribute name="unit" type="xs:string" fixed="hz"></xs:attribute>
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="CutoffHigh">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                    <xs:extension base="PosDoubleType">
+                                                        <xs:attribute name="unit" type="xs:string" fixed="hz"></xs:attribute>
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="StructuresFilterTable"></xs:element>
+                <xs:element name="AdaptiveBaselineCorrection">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="FirstPolyOrder">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="LowerLimit">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:int">
+                                                    <xs:minInclusive value="1"/>
+                                                    <xs:maxInclusive value="2"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="UpperLimit">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:int">
+                                                    <xs:minInclusive value="1"/>
+                                                    <xs:maxInclusive value="2"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>                                                                
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                                  <xs:element name="ThirdPolyOrder">
+                                        <xs:complexType>
+                                              <xs:sequence>
+                                                    <xs:element name="LowerLimit">
+                                                        <xs:simpleType>
+                                                            <xs:restriction base="xs:int">
+                                                                <xs:minInclusive value="1"/>
+                                                                <xs:maxInclusive value="3"/>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>                                                                
+                                                    </xs:element>
+                                                    <xs:element name="UpperLimit">
+                                                        <xs:simpleType>
+                                                            <xs:restriction base="xs:int">
+                                                                <xs:minInclusive value="1"/>
+                                                                <xs:maxInclusive value="3"/>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>                                                                
+                                                   </xs:element>
+                                              </xs:sequence>
+                                        </xs:complexType>
+                                  </xs:element>
+                            </xs:sequence>
+                      </xs:complexType>
+                </xs:element>
+                <xs:element name="DespikeInput">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="Yes"/>
+                            <xs:enumeration value="No"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="DespikingStdevLimit">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:int">
+                            <xs:minInclusive value="1"/>
+                            <xs:maxInclusive value="100"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="FilterCornerMethod">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="FAS"/>
+                            <xs:enumeration value="Table"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="SignalToNoiseRatio">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:double">
+                            <xs:minInclusive value="0.0"/>
+                            <xs:maxInclusive value="1000.0"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="PGAThreshold">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="Range100Type">
+                                <xs:attribute name="unit" type="xs:string" fixed="cm/sec/sec"></xs:attribute>
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="StrongMotionThreshold">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="Range100Type">
+                                <xs:attribute name="unit" type="xs:string" fixed="%g"></xs:attribute>
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="IntegrationMethod">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="Freq"/>
+                            <xs:enumeration value="Time"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="DifferentiationOrder">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:int">
+                            <xs:enumeration value="3"/>
+                            <xs:enumeration value="5"/>
+                            <xs:enumeration value="7"/>
+                            <xs:enumeration value="9"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="DecimateResampledOutput">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="Yes"/>
+                            <xs:enumeration value="No"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="ApktableSaValues">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="Brief"/>
+                            <xs:enumeration value="Full"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="OutputArrayFormat">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="SingleColumn"/>
+                            <xs:enumeration value="Packed"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="DeleteInputV0">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="Yes"/>
+                            <xs:enumeration value="No"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="DebugToLog">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="On"/>
+                            <xs:enumeration value="Off"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="WriteBaselineFunction">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="On"/>
+                            <xs:enumeration value="Off"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
