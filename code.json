@@ -4,7 +4,7 @@
     "organization": "U.S. Geological Survey",
     "description": "Performs data processing on earthquake sensor data, transforming raw sensor counts into acceleration, velocity, and displacement information.",
     "version": "2.0.0",
-    "status": "APPROVED",
+    "status": "Production",
 
     "permissions": {
       "usageType": "openSource",
@@ -17,8 +17,8 @@
     },
 
     "homepageURL": "https://code.usgs.gov/prism/prism_engine",
-    "downloadURL": "https://code.usgs.gov/prism/prism_engine/archive/master.zip",
-    "disclaimerURL": "https://code.usgs.gov/prism/prism_engine/blob/master/LICENSE.md",
+    "downloadURL": "https://code.usgs.gov/prism/prism_engine.git",
+    "disclaimerURL": "https://code.usgs.gov/prism/prism_engine/blob/master/DISCLAIMER.md",
     "repositoryURL": "https://code.usgs.gov/prism/prism_engine.git",
     "vcs": "git",
 
