@@ -17,7 +17,7 @@
     },
 
     "homepageURL": "https://code.usgs.gov/prism/prism_engine",
-    "downloadURL": "https://code.usgs.gov/prism/prism_engine.git",
+    "downloadURL": "https://code.usgs.gov/prism/prism_engine/-/archive/v2.0.0/prism_engine-v2.0.0.zip",
     "disclaimerURL": "https://code.usgs.gov/prism/prism_engine/blob/master/DISCLAIMER.md",
     "repositoryURL": "https://code.usgs.gov/prism/prism_engine.git",
     "vcs": "git",
