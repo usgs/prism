@@ -567,20 +567,30 @@ public class ArrayOps {
             return false;
         }
         int len = array.length;
+        double twopi = 2 * Math.PI;
         //range is N, the number of samples over which to apply the taper,
         //and m is the length of the half cosine taper itself.
-        int m = startrange / 2;
-        double twopi = 2 * Math.PI;
+        int m1 = startrange / 2;
+        
+        double[] taper1 = new double[m1];
+        for (int i = 0; i < m1; i++) {
+            taper1[i] = 0.5 * (1.0 - Math.cos(twopi * i / (startrange-1)));
+        }
         
         //apply at the front
-        for (int i = 0; i < m; i++) {
-            array[i] = array[i] * (0.5 * (1.0 - Math.cos(twopi * i / (startrange-1))));
+        for (int i = 0; i < m1; i++) {
+            array[i] = array[i] * taper1[i];
         }
         //Apply the end-length taper to the end of the array
         int m2 = endrange / 2;
+        
+        double[] taper2 = new double[m2];
+        for (int i = 0; i < m2; i++) {
+            taper2[i] = 0.5 * (1.0 - Math.cos(twopi * i / (endrange-1)));
+        }
         int k = m2 - 1;
         for (int i = len - m2; i < len; i++) {
-            array[i] = array[i] * (0.5 * (1.0 - Math.cos(twopi * i / (endrange-1))));
+            array[i] = array[i] * taper2[k];
             k--;
         }
         return true;
