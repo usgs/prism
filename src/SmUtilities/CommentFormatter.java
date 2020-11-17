@@ -24,6 +24,7 @@
 package SmUtilities;
 
 import SmConstants.VFileConstants;
+import SmConstants.VFileConstants.CorrectionType;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -73,10 +74,17 @@ public class CommentFormatter {
      * Adds the processing type (auto or manual) to the end of the comment list
      * @param incomments current comment list
      * @param intype processing type (auto or manual)
+     * @param version the version number of the prism engine or review tool
      * @return updated comment list
      */
-    public String[] addCorrectionType( String[] incomments, VFileConstants.CorrectionType intype ) {
-        outlist.add(String.format("|<PROCESS> %1$s", intype.name()));
+    public String[] addCorrectionType( String[] incomments, VFileConstants.CorrectionType intype, String version ) {
+        String outstring = "";
+        if (intype.equals(CorrectionType.AUTO)) {
+            outstring = String.format("|<PROCESS> Automatically processed using PRISM version %1$s",version);
+        } else {
+            outstring = String.format("|<PROCESS> Manually processed using PRISM version %1$s",version);
+        }
+        outlist.add(outstring);
         return updateComments(incomments);
     }
     /**

@@ -72,6 +72,7 @@ public class SmConfigConstants {
     public static final String DECIMATE_AFTER_RESAMPLING = "PRISM/DecimateResampledOutput";
     public static final String SIGNAL_NOISE_RATIO = "PRISM/SignalToNoiseRatio";
     public static final String FULL_ACC_SPECTRA = "PRISM/ApktableSaValues";
+    public static final String PGA_CHECK = "PRISM/PGAcheck";
     public static final String PGA_THRESHOLD = "PRISM/PGAThreshold";
     
     public static final String DESPIKE_INPUT = "PRISM/DespikeInput";

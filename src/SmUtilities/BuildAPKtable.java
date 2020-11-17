@@ -125,8 +125,7 @@ public class BuildAPKtable {
             double pgav1 = v1Component.getRealHeaderValue(PEAK_VAL);
             pgav1 = (units == 2) ? pgav1 : (pgav1 * TO_G_CONVERSION);
             data.add(String.format("%15.6f",pgav1));
-            //PGSv2
-            
+            //PGAv2
             units = v2ComponentAcc.getIntHeaderValue(V_UNITS_INDEX);
             double pgav2 = v2ComponentAcc.getRealHeaderValue(PEAK_VAL);
             pgav2 = (units == 2) ? pgav2 : (pgav2 * TO_G_CONVERSION);
@@ -141,17 +140,17 @@ public class BuildAPKtable {
             if (!fulloutput) {
                 //Sa at period 0.3 sec, 1 sec, 3 sec
                 headerline.add("SA_0.3");
-                data.add(String.format("%15.6f",v3rec.getSa_0p3()));
+                data.add(String.format("%15.6f",v3rec.getSa_0p3()*TO_G_CONVERSION));
                 headerline.add("SA_1.0");
-                data.add(String.format("%15.6f",v3rec.getSa_1p0()));
+                data.add(String.format("%15.6f",v3rec.getSa_1p0()*TO_G_CONVERSION));
                 headerline.add("SA_3.0");
-                data.add(String.format("%15.6f",v3rec.getSa_3p0()));
+                data.add(String.format("%15.6f",v3rec.getSa_3p0()*TO_G_CONVERSION));
             } else {
                 double[] t_periods = v3rec.getV3Array(T_PERIOD);
                 double[] sa_5percent = v3rec.getV3Array(SA_5PC);
                 for (int i=0; i < NUM_T_PERIODS; i++) {
                     headerline.add(String.format("SA_%-5.3f", t_periods[i]));
-                    data.add(String.format("%15.6f",sa_5percent[i]));
+                    data.add(String.format("%15.6f",sa_5percent[i]*TO_G_CONVERSION));
                 }
             }
 

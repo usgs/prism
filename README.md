@@ -5,10 +5,6 @@ A continually increasing number of high-quality digital strong-motion records fr
 
 PRISM is platform-independent, coded in Java, and open-source. To support use by earthquake engineers and scientists, PRISM is easy to install and run as a stand-alone system on common operating systems such as Linux, OS X and Windows.
 
-The source code contains some additional NetBeans files to facilitate building code outside of an IDE or to bring the code into the NetBeans IDE. PRISM was developed with NetBeans version 8.0. The main file is Prism.java in the src/SmControl package. PRISM was developed in Java 1.8. There is a set of JavaDocs to accompany the code and they are located in the prism_javadoc directory.
-
-If you want to download just the executable jar file instead of building from source code, the jar_and_examples directory contains this file.  The file 'How to run PRISM using command line.pdf' file in the same directory gives instructions on how to do this.
-
-The jar_and_examples directory also contains a sample configuration file and a set of sample COSMOS input files for testing.
+The source code contains some additional NetBeans files to facilitate building code outside of an IDE or to bring the code into the NetBeans IDE. PRISM was developed with NetBeans version 8.0. The main file is Prism.java in the src/SmControl package. PRISM was developed in Java 1.8. There is a set of JavaDocs to accompany the code.
 
 For more information, please visit https://earthquake.usgs.gov/research/software/prism/

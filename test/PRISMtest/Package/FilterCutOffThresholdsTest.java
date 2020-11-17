@@ -223,10 +223,10 @@ public class FilterCutOffThresholdsTest {
         magtype = threshold.SelectMagnitude(6.0, NOVAL, NOVAL, NOVAL, NOVAL);
         magnitude = threshold.getMagnitude();
         magtype = threshold.SelectMagThresholds(magtype,magnitude,samprate);
-        org.junit.Assert.assertEquals(MagnitudeType.LOWSPS, magtype);
+        org.junit.Assert.assertEquals(MagnitudeType.MOMENT, magtype);
         org.junit.Assert.assertEquals(6.0,threshold.getMagnitude(),EPSILON);
-        org.junit.Assert.assertEquals(0.0,threshold.getLowCutOff(),EPSILON);
-        org.junit.Assert.assertEquals(0.0,threshold.getHighCutOff(),EPSILON);
+        org.junit.Assert.assertEquals(0.1,threshold.getLowCutOff(),EPSILON);
+        org.junit.Assert.assertEquals(36.0,threshold.getHighCutOff(),EPSILON);
 
         magtype = threshold.SelectMagnitude(5.4, NOVAL, NOVAL, NOVAL, NOVAL);
         magnitude = threshold.getMagnitude();
@@ -234,7 +234,7 @@ public class FilterCutOffThresholdsTest {
         org.junit.Assert.assertEquals(MagnitudeType.MOMENT, magtype);
         org.junit.Assert.assertEquals(5.4,threshold.getMagnitude(),EPSILON);
         org.junit.Assert.assertEquals(0.3,threshold.getLowCutOff(),EPSILON);
-        org.junit.Assert.assertEquals(35.0,threshold.getHighCutOff(),EPSILON);
+        org.junit.Assert.assertEquals(36.0,threshold.getHighCutOff(),EPSILON);
 
         magtype = threshold.SelectMagnitude(3.5, NOVAL, NOVAL, NOVAL, NOVAL);
         magnitude = threshold.getMagnitude();
@@ -242,16 +242,16 @@ public class FilterCutOffThresholdsTest {
         org.junit.Assert.assertEquals(MagnitudeType.MOMENT, magtype);
         org.junit.Assert.assertEquals(3.5,threshold.getMagnitude(),EPSILON);
         org.junit.Assert.assertEquals(0.3,threshold.getLowCutOff(),EPSILON);
-        org.junit.Assert.assertEquals(35.0,threshold.getHighCutOff(),EPSILON);
+        org.junit.Assert.assertEquals(36.0,threshold.getHighCutOff(),EPSILON);
     
         samprate = 60.0;
         magtype = threshold.SelectMagnitude(3.5, NOVAL, NOVAL, NOVAL, NOVAL);
         magnitude = threshold.getMagnitude();
         magtype = threshold.SelectMagThresholds(magtype,magnitude,samprate);
-        org.junit.Assert.assertEquals(MagnitudeType.LOWSPS, magtype);
+        org.junit.Assert.assertEquals(MagnitudeType.MOMENT, magtype);
         org.junit.Assert.assertEquals(3.5,threshold.getMagnitude(),EPSILON);
-        org.junit.Assert.assertEquals(0.0,threshold.getLowCutOff(),EPSILON);
-        org.junit.Assert.assertEquals(0.0,threshold.getHighCutOff(),EPSILON);
+        org.junit.Assert.assertEquals(0.3,threshold.getLowCutOff(),EPSILON);
+        org.junit.Assert.assertEquals(24.0,threshold.getHighCutOff(),EPSILON);
     
         magtype = threshold.SelectMagnitude(NOVAL, NOVAL, NOVAL, 3.4, NOVAL);
         magnitude = threshold.getMagnitude();
@@ -259,7 +259,25 @@ public class FilterCutOffThresholdsTest {
         org.junit.Assert.assertEquals(MagnitudeType.M_OTHER, magtype);
         org.junit.Assert.assertEquals(3.4,threshold.getMagnitude(),EPSILON);
         org.junit.Assert.assertEquals(0.5,threshold.getLowCutOff(),EPSILON);
-        org.junit.Assert.assertEquals(25.0,threshold.getHighCutOff(),EPSILON);
+        org.junit.Assert.assertEquals(24.0,threshold.getHighCutOff(),EPSILON);
+
+        samprate = 50.0;
+        magtype = threshold.SelectMagnitude(NOVAL, 7.1, NOVAL, NOVAL, NOVAL);
+        magnitude = threshold.getMagnitude();
+        magtype = threshold.SelectMagThresholds(magtype,magnitude,samprate);
+        org.junit.Assert.assertEquals(MagnitudeType.M_LOCAL, magtype);
+        org.junit.Assert.assertEquals(7.1,threshold.getMagnitude(),EPSILON);
+        org.junit.Assert.assertEquals(0.1,threshold.getLowCutOff(),EPSILON);
+        org.junit.Assert.assertEquals(20.0,threshold.getHighCutOff(),EPSILON);
+
+        samprate = 40.0;
+        magtype = threshold.SelectMagnitude(NOVAL, NOVAL, 6.2, NOVAL, NOVAL);
+        magnitude = threshold.getMagnitude();
+        magtype = threshold.SelectMagThresholds(magtype,magnitude,samprate);
+        org.junit.Assert.assertEquals(MagnitudeType.LOWSPS, magtype);
+        org.junit.Assert.assertEquals(6.2,threshold.getMagnitude(),EPSILON);
+        org.junit.Assert.assertEquals(0.0,threshold.getLowCutOff(),EPSILON);
+        org.junit.Assert.assertEquals(0.0,threshold.getHighCutOff(),EPSILON);
 
         samprate = 60.0;
         magtype = threshold.SelectMagnitude(NOVAL, NOVAL, NOVAL, NOVAL, NOVAL);

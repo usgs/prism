@@ -55,7 +55,7 @@ public class PrismXMLReaderTest {
         org.junit.Assert.assertEquals("USGS", config.getConfigValue("PRISM/ProcessingAgency/StrongMotionNetworkCode/AgencyAbbreviation"));
         org.junit.Assert.assertEquals("NP", config.getConfigValue("PRISM/ProcessingAgency/StrongMotionNetworkCode/AgencyIRISCode"));
         org.junit.Assert.assertEquals("04", config.getConfigValue("PRISM/DataUnitsForCountConversion/DataUnitCodes/DataUnitCode"));
-        org.junit.Assert.assertEquals("cm/sec/sec", config.getConfigValue("PRISM/DataUnitsForCountConversion/DataUnitCodes/DataUnitName"));    
+        org.junit.Assert.assertEquals("cm/sec2", config.getConfigValue("PRISM/DataUnitsForCountConversion/DataUnitCodes/DataUnitName"));    
 
         org.junit.Assert.assertEquals("SingleColumn", config.getConfigValue("PRISM/OutputArrayFormat"));
         org.junit.Assert.assertEquals("0.1", config.getConfigValue("PRISM/QCparameters/InitialVelocity"));
@@ -76,7 +76,20 @@ public class PrismXMLReaderTest {
         org.junit.Assert.assertEquals("1", config.getConfigValue("PRISM/AdaptiveBaselineCorrection/FirstPolyOrder/LowerLimit"));
         org.junit.Assert.assertEquals("2", config.getConfigValue("PRISM/AdaptiveBaselineCorrection/FirstPolyOrder/UpperLimit"));
         org.junit.Assert.assertEquals("1", config.getConfigValue("PRISM/AdaptiveBaselineCorrection/ThirdPolyOrder/LowerLimit"));
-        org.junit.Assert.assertEquals("3", config.getConfigValue("PRISM/AdaptiveBaselineCorrection/ThirdPolyOrder/UpperLimit"));    
+        org.junit.Assert.assertEquals("3", config.getConfigValue("PRISM/AdaptiveBaselineCorrection/ThirdPolyOrder/UpperLimit")); 
+        
+        org.junit.Assert.assertEquals("Yes", config.getConfigValue("PRISM/DespikeInput"));
+        org.junit.Assert.assertEquals("4", config.getConfigValue("PRISM/DespikingStdevLimit"));
+        org.junit.Assert.assertEquals("Table", config.getConfigValue("PRISM/FilterCornerMethod"));
+        org.junit.Assert.assertEquals("3", config.getConfigValue("PRISM/SignalToNoiseRatio"));
+        org.junit.Assert.assertEquals("No", config.getConfigValue("PRISM/PGAcheck"));
+        org.junit.Assert.assertEquals("0.5", config.getConfigValue("PRISM/PGAThreshold"));
+        
+        org.junit.Assert.assertEquals("5", config.getConfigValue("PRISM/StrongMotionThreshold"));
+        org.junit.Assert.assertEquals("Freq", config.getConfigValue("PRISM/IntegrationMethod"));
+        org.junit.Assert.assertEquals("5", config.getConfigValue("PRISM/DifferentiationOrder"));
+        org.junit.Assert.assertEquals("Yes", config.getConfigValue("PRISM/DecimateResampledOutput"));
+        org.junit.Assert.assertEquals("Full", config.getConfigValue("PRISM/ApktableSaValues"));
     }
     
     @Rule public ExpectedException expectedEx = ExpectedException.none();

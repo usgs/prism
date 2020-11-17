@@ -30,6 +30,9 @@ package SmConstants;
  * @author jmjones
  */
 public final class VFileConstants {
+    //Prism engine version number - make sure to update this
+    public static final String PRISM_ENGINE_VERSION = "v2.1.0";
+    
     //text header markers
     public static final int HEADLINE_1_LENGTH = 59;
     public static final int END_OF_DATATYPE = 25;
@@ -69,7 +72,8 @@ public final class VFileConstants {
     public static final int START_TIME_MIN = 44;
     public static final int START_TIME_SEC = 29;
     
-    //V2 processing header markers
+    //V2 processing header markers - note java starts at 0 so these values
+    // are 1 less than the header numbers in the cosmos document
     public static final int UNITS_CODE = 2;
     public static final int LOW_FREQ_FILTER_TYPE = 60;
     public static final int HIGH_FREQ_FILTER_TYPE = 61;
@@ -79,6 +83,8 @@ public final class VFileConstants {
     public static final int INITIAL_VELOCITY_VAL = 67;
     public static final int INITIAL_DISPLACE_VAL = 68;
     public static final int FILTER_OPERATOR_LENGTH = 59;
+    public static final int FILTER_DECAY_LOW = 54;
+    public static final int FILTER_DECAY_HI = 57;
     
     //data product names
     public static final String RAWACC =   "Raw acceleration counts  ";
@@ -230,6 +236,7 @@ public final class VFileConstants {
     public static final String FULL_SA_VALUES = "Full";
     public static final String DESPIKE_INPUT_FLAG = "Yes";
     public static final int DEFAULT_DESPIKEDEV = 3;
+    public static final String PGA_INPUT_FLAG = "Yes";
     public static final double DEFAULT_PGA = 0.5;  //  cm/sec/sec
     
     //V3 processing

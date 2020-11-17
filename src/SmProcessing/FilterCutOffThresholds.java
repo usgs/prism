@@ -29,6 +29,7 @@ import static SmConstants.VFileConstants.MagnitudeType.MOMENT;
 import static SmConstants.VFileConstants.MagnitudeType.M_LOCAL;
 import static SmConstants.VFileConstants.MagnitudeType.M_OTHER;
 import static SmConstants.VFileConstants.MagnitudeType.SURFACE;
+import SmUtilities.FilterCornerReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -37,14 +38,18 @@ import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 /**
  * This class chooses the Butterworth filter cutoff thresholds to use, based on
- * either the magnitude of the earthquake or the frequency content of the seismic
- * signal.  
+ * either the magnitude of the earthquake, the values in the station filter corner
+ * table, or the frequency content of the seismic signal.  
  * 
  * When based on earthquake magnitude, it also determines which magnitude from
  * the COSMOS header to use, based on which value is defined in the header.  The
  * order of selection is moment, local, surface, and other.  The header values
  * are determined to be defined if they are not equal to the Real Header NoData
  * value and are non-negative.
+ * 
+ * When based on station filter corner table values, the SNCL code is used as
+ * a key to check for corners read in from the file.  If present, these corners
+ * are used instead of EQ magnitude or frequency content.
  * 
  * When based on frequency content, the Fourier amplitude spectra for noise and 
  * signal are calculated and then smoothed.  The intersection points of the smoothed
@@ -67,7 +72,7 @@ import org.apache.commons.math3.linear.RealMatrix;
  */
 public class FilterCutOffThresholds {
     private final double epsilon = 0.001;
-    private final double fc = 25.0;  //characteristic frequency of most recording instruments
+    private final double fc = 20.0;  //changed from 25 2020_08_11
     private double f1; //low cutoff
     private double f2; //high cutoff
     private double magnitude;
@@ -76,9 +81,7 @@ public class FilterCutOffThresholds {
 
     private final double mid = 3.5;
     private final double high = 5.5;
-    private final double highsamp = 100;
-    private final double midsamp = 90;
-    private final double lowsamp = 60;
+    private final double lowsamp = 50;
 /**
  * Constructor just initializes values.  The sample rate is used during the magnitude
  * approach to screen for an appropriate sample rate for the given EQ magnitude.
@@ -135,17 +138,27 @@ public class FilterCutOffThresholds {
         return magtype;
     }
     /**
+     * Checks for entries in the station filters corner table and if a match
+     * of the sncl code is found, reads in the low and high corners and sets
+     * the low cutoff and high cutoff values to the table entries
+     * @param sncl the SNCL code for the current record
+     * @return true if the sncl code is in the table and false if not
+     */
+    public boolean CheckForTableCorners( String sncl ) {
+        FilterCornerReader corners = FilterCornerReader.INSTANCE;
+        if ((!corners.isEmpty()) && (corners.containsKey(sncl))) {
+            double[] cornervalues = corners.getCornerValues(sncl);
+            f1 = cornervalues[0];
+            f2 = cornervalues[1];
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /**
      * Determines the high and low filter cutoff thresholds to use based on
-     * the earthquake magnitude.  There are 4 earthquake values that may be
-     * defined in the COSMOS header, and the order for selection is moment,
-     * local, surface, and other.
-     * There is a second check to ensure that the sampling rate is sufficient for
-     * the earthquake magnitude.  These are the minimum sampling rates and
-     * magnitudes:
-     * EQ mag(magnitude)       flc(HZ)     fhc(HZ)  Nyquist f(Hz)  min samp (samp/sec)
-     * magnitude(ge)5.5        0.1         40       50                  100
-     * 3.5(le)magnitude(lt)5.5 0.3         35       45                  90
-     * magnitude(lt)3.5        0.5         25       30                  60
+     * the earthquake magnitude and samplerate.  
+     * There is a second check to ensure that the sampling rate is sufficient.
      * 
      * @param intype earthquake source value determined from the cosmos header
      * @param mag magnitude for the given type from the header
@@ -164,32 +177,19 @@ public class FilterCutOffThresholds {
         double samplerate = orig_samprate;
         MagnitudeType magtype = intype;
         if ((magnitude > high) || (Math.abs(magnitude - high) < epsilon)) { 
-            if ((samplerate > highsamp) || (Math.abs(samplerate - highsamp) < epsilon)){
-                f1 = 0.1;
-                f2 = 40.0;
-            } else {
-                magtype = MagnitudeType.LOWSPS;
-                f1 = 0.0;
-                f2 = 0.0;
-            }
+            f1 = 0.1;
         } else if ((magnitude > mid) || (Math.abs(magnitude - mid) < epsilon)) {
-            if ((samplerate > midsamp) || (Math.abs(samplerate - midsamp) < epsilon)){
-                f1 = 0.3;
-                f2 = 35.0;
-            } else {
-                magtype = MagnitudeType.LOWSPS;
-                f1 = 0.0;
-                f2 = 0.0;
-            }
+            f1 = 0.3;
         } else {  //magnitude < low
-            if ((samplerate > lowsamp) || (Math.abs(samplerate - lowsamp) < epsilon)){
-                f1 = 0.5;
-                f2 = 25.0;
-            } else {
-                magtype = MagnitudeType.LOWSPS;
-                f1 = 0.0;
-                f2 = 0.0;
-            }
+            f1 = 0.5;
+        }
+        
+        if (samplerate >= lowsamp) {
+            f2 = Math.min(40.0,((samplerate/2.0) - (samplerate/10.0)));
+        } else {
+            magtype = MagnitudeType.LOWSPS;
+            f1 = 0.0;
+            f2 = 0.0;
         }
         return magtype;
     }

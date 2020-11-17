@@ -127,7 +127,7 @@ public class V1Process extends V1ProcessFormat {
         
         //Flag automated processing run in comments
         CommentFormatter formatter = new CommentFormatter();
-        commentUpdates = formatter.addCorrectionType(commentUpdates, CorrectionType.AUTO);
+        commentUpdates = formatter.addCorrectionType(commentUpdates, CorrectionType.AUTO, PRISM_ENGINE_VERSION);
 
         //Check for despiking flag and run despiking if requested
         if (despikeflag) {

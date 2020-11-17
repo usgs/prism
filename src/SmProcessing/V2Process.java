@@ -109,6 +109,7 @@ public class V2Process {
     private final String logtime;
     protected boolean usefft;
     protected double snrvalue;
+    protected boolean pgacheck;
     protected double pgathreshold;
     
     private V2Status procStatus;
@@ -142,6 +143,7 @@ public class V2Process {
     protected ProcessStepsRecorder2 stepRec;
     protected CommentFormatter formatter;
     protected String[] commentUpdates;
+    protected String SNCLcode;
     
     /**
      * Constructor gets the necessary header and configuration file parameters
@@ -200,6 +202,7 @@ public class V2Process {
         this.strongMotion = false;
         this.smThreshold = 0.0;
         this.commentUpdates = inV1.getComments();
+        this.SNCLcode = inV1.getSCNLcode();
         
         this.noRealVal = inV1.getNoRealVal();
         //verify that real header value delta t is defined and valid
@@ -436,6 +439,9 @@ public class V2Process {
             String snrval = config.getConfigValue(SIGNAL_NOISE_RATIO);
             this.snrvalue = (snrval == null) ? DEFAULT_SNR : Double.parseDouble(snrval);
             
+            String pgaflag = config.getConfigValue(PGA_CHECK);
+            this.pgacheck = (pgaflag == null) ? false : pgaflag.equalsIgnoreCase(PGA_INPUT_FLAG);
+            
             String pgaval = config.getConfigValue(PGA_THRESHOLD);
             this.pgathreshold = (pgaval == null) ? DEFAULT_PGA : Double.parseDouble(pgaval);
             
@@ -456,7 +462,7 @@ public class V2Process {
                                         fftint.equalsIgnoreCase(FFT_FOR_INTEGRATION);
         
         String filtcorner = config.getConfigValue(FILTER_CORNER_METHOD);
-        this.usefas = (filtcorner == null) ? true : 
+        this.usefas = (filtcorner == null) ? false : 
                                         filtcorner.equalsIgnoreCase(FAS_FOR_CORNERS);
         
         String decval = config.getConfigValue(DECIMATE_AFTER_RESAMPLING);
@@ -476,7 +482,8 @@ public class V2Process {
         }
     }
     /**
-     * Updates the filter threshold values based on the EQ magnitude or FAS
+     * Updates the filter threshold values based on the filter corner table,
+     * EQ magnitude or FAS
      */
     private boolean updateThresholds(double samprate, double origrate, 
                                         int eonset) throws SmException, IOException {
@@ -486,25 +493,28 @@ public class V2Process {
         magnitude = threshold.getMagnitude();
         errorlog.add(String.format("Earthquake magnitude is %4.2f and M used is %s",
                                                             magnitude,magtype));
-        if (usefas) {
+        if (usefas) { // check if fas method requested
             threshold.findFreqThresholds(accel, eonset, samprate, origrate);
         } else {
-            if (magtype == MagnitudeType.INVALID) {
-                throw new SmException("Earthquake magnitude real header values not valid for filter corner selection.");
-            }
-            magtype = threshold.SelectMagThresholds(magtype,magnitude,origrate);
-            if (magtype == MagnitudeType.LOWSPS) {
-                thresholdstat = false;
-                errorlog.add("Original sample rate too low for given earthquake magnitude");
-                errorlog.add(String.format("  earthquake magnitude is %4.2f and sample rate is %6.2f",magnitude, samprate));
+            // First check for (and get) corners in filter table
+            boolean foundintable = threshold.CheckForTableCorners(SNCLcode);
+            if (!foundintable) {  //If not in corners table, pick based on EQ and sps
+                if (magtype == MagnitudeType.INVALID) {
+                    throw new SmException("Earthquake magnitude real header values not valid for filter corner selection.");
+                }
+                magtype = threshold.SelectMagThresholds(magtype,magnitude,origrate);
+                if (magtype == MagnitudeType.LOWSPS) {
+                    thresholdstat = false;
+                    errorlog.add("Original sample rate too low for given earthquake magnitude");
+                    errorlog.add(String.format("  earthquake magnitude is %4.2f and sample rate is %6.2f",magnitude, samprate));
+                    procStatus  = V2Status.FAILINIT;
+                    errorlog.add("V2process: exit status = " + procStatus);
+                    writeOutErrorDebug();
+                    makeDebugCSV();                      
+                }
             }
         }
-        if (!thresholdstat) {
-            procStatus  = V2Status.FAILINIT;
-            errorlog.add("V2process: exit status = " + procStatus);
-            writeOutErrorDebug();
-            makeDebugCSV();                      
-        } else {
+        if (thresholdstat) {
             // Update Butterworth filter low and high cutoff thresholds for later
             lowcutadj = threshold.getLowCutOff();
             highcutadj = threshold.getHighCutOff();
@@ -677,17 +687,21 @@ public class V2Process {
      * Writes snr debug information out to the error/debug log and checks for too low value
      */
     private boolean checkSNRandPeakVal(double[] array) throws IOException{
-        boolean goodSNRpeak = true;
+        boolean goodSNRpeak;
+        goodSNRpeak = (snr >= snrvalue);
         errorlog.add(String.format("acceleration SNR is %4.2f and limit is %4.2f",snr,snrvalue));
-        ArrayStats stats = new ArrayStats(array);
-        double peakval = stats.getPeakVal();
-        errorlog.add(String.format("acceleration peak (absolute) value is %4.2f and limit is %4.2f",Math.abs(peakval),Math.abs(pgathreshold)));
-        if ((snr < snrvalue) || (Math.abs(peakval) < Math.abs(pgathreshold))) {
+        if (pgacheck) {
+            ArrayStats stats = new ArrayStats(array);
+            double peakval = stats.getPeakVal();
+            errorlog.add(String.format("acceleration peak (absolute) value is %4.2f and limit is %4.2f",
+                    Math.abs(peakval),Math.abs(pgathreshold)));
+            goodSNRpeak = (Math.abs(peakval) >= Math.abs(pgathreshold));
+        }
+        if (!goodSNRpeak) {
             procStatus  = V2Status.FAILINIT;
             errorlog.add("V2process: exit status = " + procStatus);
             writeOutErrorDebug();
             makeDebugCSV();
-            goodSNRpeak = false;
         }
         return goodSNRpeak;
     }

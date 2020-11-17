@@ -314,7 +314,7 @@ public class V1Component extends COSMOScontentFormat {
         String unitsname, agabbrev;
         int unitscode;
         CommentFormatter formatter = new CommentFormatter();
-        comments = formatter.addCorrectionType(comments, CorrectionType.MANUAL);
+        comments = formatter.addCorrectionType(comments, CorrectionType.MANUAL,PRISM_ENGINE_VERSION);
 //        ProcessStepsRecorder2 stepRec  = ProcessStepsRecorder2.INSTANCE;
 //        stepRec.clearSteps();
 //        stepRec.addCorrectionType(CorrectionType.MANUAL);

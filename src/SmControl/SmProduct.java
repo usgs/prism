@@ -195,19 +195,6 @@ public class SmProduct extends SmProductFormat {
         return outName;
     }
     /**
-     * Removes the input file from the input directory, if it exists, and if the
-     * Delete Input Files flag in the configuration file is set to 'Yes'. If the
-     * configuration file is set to 'No', the file is not deleted.
-     * @param source the input file
-     * @throws IOException if unable to delete the file
-     */
-    public void deleteV0AfterProcessing(File source) throws IOException {
-        if (this.deleteInputFiles) {
-            Path infile = source.toPath();
-            Files.deleteIfExists(infile);
-        }
-    }
-    /**
      * Builds a trouble log from the list of all log files.  If there are no
      * files going to trouble folders, the list returned has size 0.
      * @param inlog the list of all output files

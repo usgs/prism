@@ -89,7 +89,6 @@ public class ABC2 {
     private double[] derivbnn;
     private double[] b1;
     private int bestfirstdegree;
-    private int bestthirddegree;
     private ArrayList<double[]> params;
     private double[] rms;
     private int[] ranking;
@@ -127,7 +126,6 @@ public class ABC2 {
         this.solution = 0;
         this.counter = 1;
         this.bestfirstdegree = 0;
-        this.bestthirddegree = 0;
 
         ConfigReader config = ConfigReader.INSTANCE;
         String difford = config.getConfigValue(DIFFERENTIATION_ORDER);

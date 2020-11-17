@@ -61,9 +61,8 @@
 	</BandPassFilterParameters>
 		
 	<!--If a filename is given here, it will be read in and used to
-	configure the filter corners to be used for given station numbers.
-	Currently not used  -->
-	<StructuresFilterTable></StructuresFilterTable>
+	configure the filter corners to be used for given station numbers. -->
+	<StationFilterTable></StationFilterTable>
 
 	<!--The Adaptive Baseline Correction algorithm uses 3 segments to try and construct
 	a baseline correction function.  The first segment, from the start of the
@@ -101,7 +100,7 @@
 	acceleration array to the spectrum of the pre-event (noise) portion of the input
 	acceleration.  Note: the FAS option is computationally intensive and will substantially
 	increase run time.  The options are 'Table' and 'FAS'. -->
-	<FilterCornerMethod>FAS</FilterCornerMethod>
+	<FilterCornerMethod>Table</FilterCornerMethod>
 	
 	<!-- The signal-to-noise ratio parameter determines the minimum SNR required
 	for V2 processing.  The signal power is determined from the input acceleration
@@ -111,7 +110,9 @@
 	
 	<!-- The PGA threshold parameter determines the minimum uncorrected acceleration
 	peak ground acceleration required for V2 processing. The uncorrected PGA
-	is determined by finding the peak value (pos. or neg.) in the array. -->
+	is determined by finding the peak value (pos. or neg.) in the array. To include this
+	check, set the PGAcheck to Yes and define the minimum threshold. -->
+	<PGAcheck>No</PGAcheck>
 	<PGAThreshold unit="cm/sec/sec">0.5</PGAThreshold>
 	
 	<!-- The strong motion threshold parameter determines the %g that the corrected
@@ -137,7 +138,7 @@
 	<!-- The apktable contains an overview of information on the processed records.
 	The table normally contains just 3 of the Sa values at 5% damping.  To include all
 	the Sa 5% values, set this flag to 'Full' instead of 'Brief'.-->
-	<ApktableSaValues>Brief</ApktableSaValues>
+	<ApktableSaValues>Full</ApktableSaValues>
 	
 	<!--	Tags for output data array format are SingleColumn and Packed.
 	SingleColumn will write one data value per line, and Packed will pack

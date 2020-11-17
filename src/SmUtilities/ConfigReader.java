@@ -45,7 +45,7 @@ public class ConfigReader {
  * variable:  ConfigReader config = ConfigReader.INSTANCE.
  */
     private ConfigReader() {
-        contents = new HashMap<>();
+        contents = new HashMap<>(50);
     }
 /**
  * Getter for the value stored for the given key.

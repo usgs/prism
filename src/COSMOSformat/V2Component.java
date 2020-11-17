@@ -24,6 +24,7 @@
 
 package COSMOSformat;
 
+import static SmConstants.SmConfigConstants.BP_FILTER_ORDER;
 import static SmConstants.VFileConstants.*;
 import SmConstants.VFileConstants.SmArrayStyle;
 import SmConstants.VFileConstants.V2DataType;
@@ -300,6 +301,8 @@ public class V2Component extends COSMOScontentFormat {
         this.realHeader.setRealValue(BRACKETED_DURATION, inVvals.getBracketedDuration());
         this.realHeader.setRealValue(DURATION_INTERVAL, inVvals.getDurationInterval());
         this.realHeader.setRealValue(CUMULATIVE_ABS_VEL, inVvals.getCumulativeAbsVelocity());
+        this.realHeader.setRealValue(FILTER_DECAY_LOW,Integer.parseInt(config.getConfigValue(BP_FILTER_ORDER)));
+        this.realHeader.setRealValue(FILTER_DECAY_HI,Integer.parseInt(config.getConfigValue(BP_FILTER_ORDER)));
         
         //Housner intensity is calculated during V3 processing and appears in V3 product
         this.realHeader.setRealValue(RMS_ACCELERATION, inVvals.getRMSacceleration());

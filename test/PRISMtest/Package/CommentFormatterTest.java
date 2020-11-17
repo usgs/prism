@@ -24,6 +24,7 @@
 package PRISMtest.Package;
 
 import SmConstants.VFileConstants;
+import static SmConstants.VFileConstants.PRISM_ENGINE_VERSION;
 import SmUtilities.CommentFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,13 +53,13 @@ public class CommentFormatterTest {
         incomments[4] = "|<SCNL>HAST.HNE.BK.00    <AUTH> 2015/03/21 22:41:18.000";
         
         test1 = new String[4];
-        test1[0] = "|<PROCESS> MANUAL";
+        test1[0] = "|<PROCESS> Manually processed using PRISM version v1.2.3";
         test1[1] = "|<EONSET> event onset(sec)=  31.9800";
         test1[2] = "|<ABLC>SF:   0.0000, EF:  31.9800, SA:   0.0000, EA: 132.0000, ORDER:  MEAN";
         test1[3] = "|<VBLC>SF:   0.0000, EF: 132.0000, SA:   0.0000, EA: 132.0000, ORDER:ORDER2";
         
         test2 = new String[6];
-        test2[0] = "|<PROCESS> AUTO";
+        test2[0] = "|<PROCESS> Automatically processed using PRISM version v1.2.3";
         test2[1] = "|<EONSET> event onset(sec)=   5.0000";
         test2[2] = "|<ABLC>SF:   0.0000, EF:   5.0000, SA:   0.0000, EA: 124.0000, ORDER:  MEAN";
         test2[3] = "|<VBLABC1>SF:   0.0000, EF:  12.0000, SA:   0.0000, EA:  12.0000, ORDER:ORDER1";
@@ -68,22 +69,22 @@ public class CommentFormatterTest {
         empty = new String[0];
 
         testresamp = new String[3];
-        testresamp[0] = "|<PROCESS> AUTO";
+        testresamp[0] = "|<PROCESS> Automatically processed using PRISM version v1.2.3";
         testresamp[1] = "|<RESAMPLE> Data resampled to 200.00 samples/sec";
         testresamp[2] = "|<EONSET> event onset(sec)=  15.3200";
 
         testresampdec = new String[4];
-        testresampdec[0] = "|<PROCESS> AUTO";
+        testresampdec[0] = "|<PROCESS> Automatically processed using PRISM version v1.2.3";
         testresampdec[1] = "|<RESAMPLE> Data resampled to 200.00 samples/sec";
         testresampdec[2] = "|<EONSET> event onset(sec)=  15.3200";
         testresampdec[3] = "|<DECIMATE> Data decimated to 100.00 samples/sec";
         
         testtrim = new String[2];
-        testtrim[0] = "|<PROCESS> MANUAL";
+        testtrim[0] = "|<PROCESS> Manually processed using PRISM version v1.2.3";
         testtrim[1] = "|<TRIM> 260 samp. of beginning, 400 samp. of end of original channel";
         
         despike = new String[3];
-        despike[0] = "|<PROCESS> AUTO";
+        despike[0] = "|<PROCESS> Automatically processed using PRISM version v1.2.3";
         despike[1] = "|<DESPIKE> 2 spike(s) removed during V1 processing";
         despike[2] = "|<EONSET> event onset(sec)=  15.3200";
     }
@@ -107,7 +108,7 @@ public class CommentFormatterTest {
     public void formatterTest1() {
         String[] result;
         CommentFormatter formatter = new CommentFormatter();
-        result = formatter.addCorrectionType(incomments, VFileConstants.CorrectionType.MANUAL);
+        result = formatter.addCorrectionType(incomments, VFileConstants.CorrectionType.MANUAL, "v1.2.3");
         result = formatter.addEventOnset(result, 31.98);
         result = formatter.addBaselineStep(result, 0.0, 31.98,0.0, 132.00, 
                                 VFileConstants.V2DataType.ACC, 
@@ -125,7 +126,7 @@ public class CommentFormatterTest {
     public void formatterTest2() {
         String[] result;
         CommentFormatter formatter = new CommentFormatter();
-        result = formatter.addCorrectionType(incomments, VFileConstants.CorrectionType.AUTO);
+        result = formatter.addCorrectionType(incomments, VFileConstants.CorrectionType.AUTO, "v1.2.3");
         result = formatter.addEventOnset(result, 5.0);
         result = formatter.addBaselineStep(result, 0.0,5.0,0.0,124.0,
                                 VFileConstants.V2DataType.ACC, 
@@ -150,7 +151,7 @@ public class CommentFormatterTest {
     public void testRecorderResample() {
         String[] result;
         CommentFormatter formatter = new CommentFormatter();
-        result = formatter.addCorrectionType(incomments, VFileConstants.CorrectionType.AUTO);
+        result = formatter.addCorrectionType(incomments, VFileConstants.CorrectionType.AUTO, "v1.2.3");
         result = formatter.addResampling(result,200.00);
         result = formatter.addEventOnset(result,15.32);
         String[] expected = mergeStrings(incomments,testresamp);
@@ -160,7 +161,7 @@ public class CommentFormatterTest {
     public void testRecorderResampleDecimate() {
         String[] result;
         CommentFormatter formatter = new CommentFormatter();
-        result = formatter.addCorrectionType(incomments, VFileConstants.CorrectionType.AUTO);
+        result = formatter.addCorrectionType(incomments, VFileConstants.CorrectionType.AUTO, "v1.2.3");
         result = formatter.addResampling(result,200.00);
         result = formatter.addEventOnset(result,15.32);
         result = formatter.addDecimation(result,100.0);
@@ -171,7 +172,7 @@ public class CommentFormatterTest {
     public void testRecorderTrim() {
         String[] result;
         CommentFormatter formatter = new CommentFormatter();
-        result = formatter.addCorrectionType(incomments,VFileConstants.CorrectionType.MANUAL);
+        result = formatter.addCorrectionType(incomments,VFileConstants.CorrectionType.MANUAL, "v1.2.3");
         result = formatter.addTrimIndicies(result,260,400);
         String[] expected = mergeStrings(incomments,testtrim);
         org.junit.Assert.assertArrayEquals(expected, result);
@@ -180,7 +181,7 @@ public class CommentFormatterTest {
     public void testDespike() {
         String[] result;
         CommentFormatter formatter = new CommentFormatter();
-        result = formatter.addCorrectionType(incomments, VFileConstants.CorrectionType.AUTO);
+        result = formatter.addCorrectionType(incomments, VFileConstants.CorrectionType.AUTO, "v1.2.3");
         result = formatter.addSpikeCount(result, 2);
         result = formatter.addEventOnset(result,15.32);
         String[] expected = mergeStrings(incomments,despike);

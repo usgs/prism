@@ -32,6 +32,11 @@ import SmUtilities.ConfigReader;
 import SmUtilities.PrismLogger;
 import SmUtilities.PrismXMLReader;
 import SmConstants.SmConfigConstants;
+import static SmConstants.SmConfigConstants.FILTER_CORNER_METHOD;
+import static SmConstants.SmConfigConstants.STATION_FILTER_TABLE;
+import static SmConstants.VFileConstants.FAS_FOR_CORNERS;
+import SmUtilities.FileRemovalCheck;
+import SmUtilities.FilterCornerReader;
 import SmUtilities.SmDebugLogger;
 import SmUtilities.SmTimeFormatter;
 import java.io.*;
@@ -40,6 +45,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
@@ -145,13 +151,24 @@ public class Prism {
                 catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException err) {
                     throw new SmException("Unable to access configuration file parameters for logging");
                 }
+                // Check for station filter corner table and load if found
+                ConfigReader config = ConfigReader.INSTANCE;
+                String cornerfile = config.getConfigValue(STATION_FILTER_TABLE);
+                String filtcorner = config.getConfigValue(FILTER_CORNER_METHOD);
+                if ((cornerfile != null) && (!filtcorner.equalsIgnoreCase(FAS_FOR_CORNERS))){
+                    FilterCornerReader corners = FilterCornerReader.INSTANCE;
+                    corners.loadFilterCorners(cornerfile);
+                }
             }
             //Get each filename, read in, parse, process, write it out. When  
             //going through the list of input files, report any problems 
             //with an individual file and move directly to the next file.  
-            //Attempt to process all the files in the list.
+            //Attempt to process all the files in the list. Check if config file
+            //flagged removal of V0 from input dir and, if so, delete after copy
+            //to output dir.
+            FileRemovalCheck remover = new FileRemovalCheck();
             for (File each: smc.inVList){
-                smc.smqueue = new SmQueue( each, logtime, log.getLogFolder() );
+                smc.smqueue = new SmQueue(each, logtime, log.getLogFolder());
                 smc.Vproduct = new SmProduct(smc.outFolder);
                 try {
                     smc.smqueue.readInFile( each );
@@ -168,22 +185,23 @@ public class Prism {
                     if (troublelist.length > 0) {
                         errlog.writeToLog(troublelist, VFileConstants.LogType.TROUBLE);
                     }
-                    smc.Vproduct.deleteV0AfterProcessing(each);
                 }
                 catch (FormatException | IOException | SmException err) {
                     String[] logtxt = new String[2];
                     logtxt[0] = "Unable to process file " + each.toString();
                     logtxt[1] = "\t" + err.getMessage();
                     log.writeToLog(logtxt);
+                    File badread = Paths.get(smc.outFolder, "Read_Trouble").toFile();
+                    if (!badread.isDirectory()) { badread.mkdir(); }
+                    Path target = badread.toPath().resolve(each.toPath().getFileName());
+                    Files.copy(each.toPath(), target, REPLACE_EXISTING);
                 }
+                remover.deleteV0Check(each);
             }
         } 
-
         catch (SmException err){
             System.err.println(err.getMessage());
         }
-
-
     }
     /**
      * Reads in the configuration file and parses the xml
